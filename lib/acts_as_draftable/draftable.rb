@@ -54,6 +54,13 @@ module ActsAsDraftable
         last_active_draft.to_online(operator) unless last_active_draft.blank?
       end
 
+      def with_draft
+        unless self.last_active_draft.blank?
+          self.assign_attributes(self.last_active_draft.content_as_json)
+        end
+        self
+      end
+
     end
 
     module ClassMethods
