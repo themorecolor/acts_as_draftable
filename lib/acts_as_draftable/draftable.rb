@@ -10,7 +10,7 @@ module ActsAsDraftable
 
       def draft_update(params)
         self.assign_attributes(params)
-        if self.class::Need_draft_attributes.present?
+        if self.class.const_defined? :Need_draft_attributes
           draft_check_save
         else
           draft_all_save
@@ -30,8 +30,8 @@ module ActsAsDraftable
               end
             end
           end
-          self.drafts.create(content: draft_res, active: 1)
-          self.update(no_draft_res)
+          self.drafts.create(content: draft_res, active: 1) unless draft_res.blank?
+          self.update(no_draft_res) unless no_draft_res.blank?
         end
       end
 
@@ -41,7 +41,7 @@ module ActsAsDraftable
           self.class.column_names.each do |name|
             res[name] = self.send(name) if self.send("#{name}_changed?")
           end
-          self.drafts.create(content: res, active: 1)
+          self.drafts.create(content: res, active: 1) unless res.blank?
         end
       end
 
