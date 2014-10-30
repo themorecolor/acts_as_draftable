@@ -4,6 +4,6 @@ module ActsAsDraftable
   # Your code goes here...
   require 'acts_as_draftable/draft'
 
-  ActiveRecord::Base.extend ActsAsVotable::Extenders::Extend
+  ActiveRecord::Base.extend ActsAsDraftable::Extenders::Extend
 
 end
