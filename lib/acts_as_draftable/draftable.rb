@@ -47,7 +47,7 @@ module ActsAsDraftable
 
       def last_active_draft
         draft = self.drafts.order(created_at: :desc).first
-        draft.active? ? draft : nil
+        draft.active? ? draft : nil unless draft.blank?
       end
 
       def last_active_draft_to_online(operator = nil)
