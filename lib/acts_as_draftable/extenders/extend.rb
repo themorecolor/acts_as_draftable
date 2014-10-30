@@ -19,9 +19,6 @@ module ActsAsDraftable
 
       module Tools
         def draft_attributes(*args)
-          class_eval do
-            attr_accessor :attributes_need_draft
-          end
           self.attributes_need_draft = args
         end
       end

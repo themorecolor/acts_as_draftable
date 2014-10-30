@@ -6,6 +6,7 @@ module ActsAsDraftable
 
     included do
 
+      attr_accessor :attributes_need_draft
       has_many :drafts, as: :draftable
 
 
