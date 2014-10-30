@@ -5,6 +5,7 @@ module ActsAsDraftable
   require 'acts_as_draftable/extenders/extend'
   require 'acts_as_draftable/draft'
 
-  ActiveRecord::Base.extend ActsAsDraftable::Extenders::Extend
+  ActiveRecord::Base.extend ActsAsDraftable::Extenders::Extend::Ownerable
+  ActiveRecord::Base.extend ActsAsDraftable::Extenders::Extend::Draftable
 
 end
