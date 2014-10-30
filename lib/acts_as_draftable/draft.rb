@@ -17,9 +17,13 @@ module ActsAsDraftable
       active == 1
     end
 
-    def to_online
+    def to_online(operator = nil)
       self.draftable.update!(self.content_as_json)
-      self.update(active: 0)
+      unless operator.blank?
+        self.update(active: 0)
+      else
+        self.update(active: 0, operator_id: operator.id)
+      end
     end
 
     def content_as_json

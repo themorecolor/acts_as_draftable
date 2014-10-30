@@ -25,8 +25,8 @@ module ActsAsDraftable
         draft.active? ? draft : nil
       end
 
-      def last_active_draft_to_online
-        last_active_draft.to_online unless last_active_draft.blank?
+      def last_active_draft_to_online(operator = nil)
+        last_active_draft.to_online(operator) unless last_active_draft.blank?
       end
 
     end
