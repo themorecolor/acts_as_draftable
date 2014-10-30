@@ -2,7 +2,7 @@
 module ActsAsDraftable
   class Draft < ::ActiveRecord::Base
 
-    serialize :content, JSON
+    serialize :content
 
     belongs_to :draftable, :polymorphic => true
     belongs_to :ownerable, :polymorphic => true
@@ -15,6 +15,15 @@ module ActsAsDraftable
 
     def active?
       active == 1
+    end
+
+    def to_online
+      self.draftable.update!(self.content_as_json)
+      self.update(active: 0)
+    end
+
+    def content_as_json
+      YAML.load(self.content)
     end
 
 

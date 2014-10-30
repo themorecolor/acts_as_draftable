@@ -16,7 +16,7 @@ module ActsAsDraftable
               res[name] = self.send(name)
             end
           end
-          self.drafts.create(content: res)
+          self.drafts.create(content: res, active: 1)
         end
       end
 
@@ -25,11 +25,8 @@ module ActsAsDraftable
         draft.active? ? draft : nil
       end
 
-      def draft_to_online
-        unless last_active_draft.blank?
-          self.update!(last_active_draft.content)
-          last_active_draft.update(active: 0)
-        end
+      def last_active_draft_to_online
+        last_active_draft.to_online unless last_active_draft.blank?
       end
 
     end
