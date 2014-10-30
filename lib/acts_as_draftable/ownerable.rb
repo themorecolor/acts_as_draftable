@@ -2,15 +2,12 @@ module ActsAsDraftable
   module Ownerable
 
     def self.included(base)
-      base.extend(ClassMethods)
-    end
+      base.class_eval do
 
-    module ClassMethods
-
-      def acts_as_ownerable
         has_many :drafts, as: :ownerable
-      end
 
+
+      end
     end
 
   end

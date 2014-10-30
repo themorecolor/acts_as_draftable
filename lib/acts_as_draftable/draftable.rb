@@ -2,10 +2,8 @@ module ActsAsDraftable
   module Draftable
 
     def self.included(base)
-      base.extend(ClassMethods)
-    end
+      base.class_eval do
 
-    module ClassMethods
         has_many :drafts, as: :draftable
 
         def draft_save
@@ -31,6 +29,8 @@ module ActsAsDraftable
             last_active_draft.update(active: 0)
           end
         end
+
+      end
     end
 
   end
