@@ -1,5 +1,5 @@
 # encoding: utf-8
-module ActsAsTaggableOn
+module ActsAsDraftable
   class Draft < ::ActiveRecord::Base
 
     serialize :content, JSON
