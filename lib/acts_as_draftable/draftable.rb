@@ -5,10 +5,9 @@ module ActsAsDraftable
     extend ActiveSupport::Concern
 
     included do
-      has_many :drafts, as: :draftable
-    end
 
-    module ClassMethods
+      has_many :drafts, as: :draftable
+
       def draft_save
         if self.changed?
           res = {}
@@ -32,6 +31,11 @@ module ActsAsDraftable
           last_active_draft.update(active: 0)
         end
       end
+
+    end
+
+    module ClassMethods
+
     end
 
   end
