@@ -17,12 +17,6 @@ module ActsAsDraftable
         end
       end
 
-      module Tools
-        def draft_attributes(*args)
-          self.attributes_need_draft = args
-        end
-      end
-
     end
 
   end

@@ -6,21 +6,40 @@ module ActsAsDraftable
 
     included do
 
-      attr_accessor :attributes_need_draft
       has_many :drafts, as: :draftable
 
-
-      def with_draft_update(params)
-
+      def draft_update(params)
+        self.assign_attributes(params)
+        if self::Need_draft_attributes.present?
+          draft_check_save
+        else
+          draft_all_save
+        end
       end
 
-      def draft_save
+      def draft_check_save
+        if self.changed?
+          draft_res = {}
+          no_draft_res = {}
+          self.class.column_names.each do |name|
+            if self.send("#{name}_changed?")
+              if self::Need_draft_attributes.include? name.to_sym
+                draft_res[name] = self.send(name)
+              else
+                no_draft_res[name] = self.send(name)
+              end
+            end
+          end
+          self.drafts.create(content: draft_res, active: 1)
+          self.update(no_draft_res)
+        end
+      end
+
+      def draft_all_save
         if self.changed?
           res = {}
-          (self.class.column_names - ["id", "updated_at", "created_at"]).each do |name|
-            if self.send("#{name}_changed?")
-              res[name] = self.send(name)
-            end
+          self.class.column_names.each do |name|
+            res[name] = self.send(name) if self.send("#{name}_changed?")
           end
           self.drafts.create(content: res, active: 1)
         end
