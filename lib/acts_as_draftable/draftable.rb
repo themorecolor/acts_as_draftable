@@ -2,7 +2,7 @@ module ActsAsDraftable
   module Draftable
 
     def self.included(base)
-      base.class_eval do
+      class_eval do
 
         has_many :drafts, as: :draftable
 
