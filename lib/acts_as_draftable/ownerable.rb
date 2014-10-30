@@ -1,14 +1,14 @@
+require 'active_support/concern'
+
 module ActsAsDraftable
   module Ownerable
 
-    def self.included(base)
-      base.class_eval do
+    extend ActiveSupport::Concern
 
-        has_many :drafts, as: :ownerable
-
-
-      end
+    included do
+      has_many :drafts, as: :ownerable
     end
+
 
   end
 end

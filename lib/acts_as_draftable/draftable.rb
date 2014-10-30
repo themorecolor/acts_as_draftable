@@ -1,36 +1,40 @@
+require 'active_support/concern'
+
 module ActsAsDraftable
   module Draftable
 
-    def self.included(base)
-      class_eval do
+    extend ActiveSupport::Concern
 
-        has_many :drafts, as: :draftable
+    included do
+      has_many :drafts, as: :draftable
+    end
 
-        def draft_save
-          if self.changed?
-            res = {}
-            (self.class.column_names - ["id", "updated_at", "created_at"]).each do |name|
-              if self.send("#{name}_changed?")
-                res[name] = self.send(name)
-              end
+    module ClassMethods
+
+      def draft_save
+        if self.changed?
+          res = {}
+          (self.class.column_names - ["id", "updated_at", "created_at"]).each do |name|
+            if self.send("#{name}_changed?")
+              res[name] = self.send(name)
             end
-            self.drafts.create(content: res)
           end
+          self.drafts.create(content: res)
         end
-
-        def last_active_draft
-          draft = self.drafts.order(created_at: :desc).first
-          draft.active? ? draft : nil
-        end
-
-        def draft_to_online
-          unless last_active_draft.blank?
-            self.update!(last_active_draft.content)
-            last_active_draft.update(active: 0)
-          end
-        end
-
       end
+
+      def last_active_draft
+        draft = self.drafts.order(created_at: :desc).first
+        draft.active? ? draft : nil
+      end
+
+      def draft_to_online
+        unless last_active_draft.blank?
+          self.update!(last_active_draft.content)
+          last_active_draft.update(active: 0)
+        end
+      end
+
     end
 
   end

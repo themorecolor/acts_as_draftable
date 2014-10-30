@@ -1,8 +1,5 @@
 require 'active_record'
-require 'active_support/inflector'
 require "acts_as_draftable/version"
-
-$LOAD_PATH.unshift(File.dirname(__FILE__))
 
 module ActsAsDraftable
   # Your code goes here...
