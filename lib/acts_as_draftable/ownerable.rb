@@ -5,7 +5,7 @@ module ActsAsDraftable
 
     extend ActiveSupport::Concern
 
-    included do
+    included base do
       has_many :drafts, as: :ownerable
     end
 
