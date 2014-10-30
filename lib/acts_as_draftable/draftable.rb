@@ -2,12 +2,10 @@ require 'active_support/concern'
 
 module ActsAsDraftable
   module Draftable
-
     extend ActiveSupport::Concern
 
-    included base do
+    included do
       has_many :drafts, as: :draftable
-      base.extend ClassMethods
     end
 
     module ClassMethods

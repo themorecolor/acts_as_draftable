@@ -1,4 +1,5 @@
 require 'active_record'
+require 'active_model/dirty'
 require "acts_as_draftable/version"
 
 module ActsAsDraftable
