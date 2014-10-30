@@ -10,7 +10,7 @@ module ActsAsDraftable
 
       def draft_update(params)
         self.assign_attributes(params)
-        if self::Need_draft_attributes.present?
+        if self.class::Need_draft_attributes.present?
           draft_check_save
         else
           draft_all_save
@@ -23,7 +23,7 @@ module ActsAsDraftable
           no_draft_res = {}
           self.class.column_names.each do |name|
             if self.send("#{name}_changed?")
-              if self::Need_draft_attributes.include? name.to_sym
+              if self.class::Need_draft_attributes.include? name.to_sym
                 draft_res[name] = self.send(name)
               else
                 no_draft_res[name] = self.send(name)
