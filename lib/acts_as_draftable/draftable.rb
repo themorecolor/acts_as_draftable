@@ -8,6 +8,11 @@ module ActsAsDraftable
 
       has_many :drafts, as: :draftable
 
+
+      def with_draft_update(params)
+
+      end
+
       def draft_save
         if self.changed?
           res = {}
