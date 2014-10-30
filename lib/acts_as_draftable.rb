@@ -10,6 +10,5 @@ module ActsAsDraftable
 
   ActiveRecord::Base.extend ActsAsDraftable::Extenders::Extend::Ownerable
   ActiveRecord::Base.extend ActsAsDraftable::Extenders::Extend::Draftable
-  ActiveRecord::Base.extend ActsAsDraftable::Extenders::Extend::Tools
 
 end
