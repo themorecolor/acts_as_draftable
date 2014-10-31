@@ -10,6 +10,11 @@ module ActsAsDraftable
 
       def draft_update(params)
         self.assign_attributes(params)
+
+        unless self.valid?
+          raise self.errors.full_messages.join(", ")
+        end
+
         if self.class.const_defined? :Need_draft_attributes
           draft_check_save
         else
@@ -30,8 +35,9 @@ module ActsAsDraftable
               end
             end
           end
-          self.drafts.create(content: draft_res, active: 1) unless draft_res.blank?
+
           self.update(no_draft_res) unless no_draft_res.blank?
+          self.drafts.create(content: draft_res, active: 1) unless draft_res.blank?
         end
       end
 
