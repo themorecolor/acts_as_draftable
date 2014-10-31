@@ -56,12 +56,12 @@ module ActsAsDraftable
         draft.active? ? draft : nil unless draft.blank?
       end
 
-      def last_active_draft_to_online(operator = nil)
-        last_active_draft.to_online(operator) unless last_active_draft.blank?
+      def last_active_draft_to_online(verfied_mome, operator = nil)
+        last_active_draft.to_online(verfied_mome, operator) unless last_active_draft.blank?
       end
 
-      def last_active_draft_to_offline(operator = nil)
-        last_active_draft.to_offline(operator) unless last_active_draft.blank?
+      def last_active_draft_to_offline(verfied_mome, operator = nil)
+        last_active_draft.to_offline(verfied_mome, operator) unless last_active_draft.blank?
       end
 
       def with_draft
