@@ -71,6 +71,10 @@ module ActsAsDraftable
         self
       end
 
+      def is_need_verified
+        last_active_draft.blank? ? 0 : 1
+      end
+
     end
 
     module ClassMethods
