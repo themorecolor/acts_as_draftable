@@ -36,6 +36,7 @@ module ActsAsDraftable
             end
           end
 
+          self.reload
           self.update(no_draft_res) unless no_draft_res.blank?
           self.drafts.create(content: draft_res, active: 1) unless draft_res.blank?
         end
