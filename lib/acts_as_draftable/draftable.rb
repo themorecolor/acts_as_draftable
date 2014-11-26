@@ -71,7 +71,7 @@ module ActsAsDraftable
 
       def with_draft
         if self.last_draft.present? and self.last_draft.active != 1
-          self.assign_attributes(self.last_active_draft.content_as_json)
+          self.assign_attributes(self.last_draft.content_as_json)
         end
         self
       end
