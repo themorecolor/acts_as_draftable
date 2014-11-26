@@ -52,6 +52,10 @@ module ActsAsDraftable
         end
       end
 
+      def last_draft
+        self.drafts.order(created_at: :desc).first
+      end
+
       def last_active_draft
         draft = self.drafts.order(created_at: :desc).first
         draft.active? ? draft : nil unless draft.blank?
@@ -66,7 +70,7 @@ module ActsAsDraftable
       end
 
       def with_draft
-        unless self.last_active_draft.blank?
+        if self.last_draft.present? and self.last_draft.active != 1
           self.assign_attributes(self.last_active_draft.content_as_json)
         end
         self
