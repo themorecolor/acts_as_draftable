@@ -8,27 +8,27 @@ module ActsAsDraftable
 
       has_many :drafts, as: :draftable
 
-      def draft_update(params)
+      def draft_update(params, owner = nil)
         self.assign_attributes(params)
 
         unless self.valid?
           raise self.errors.full_messages.join(", ")
         end
 
-        if self.class.const_defined? :Need_draft_attributes
-          draft_check_save
+        unless self.need_verified_fields.blank?
+          draft_check_save(owner)
         else
-          draft_all_save
+          draft_all_save(owner)
         end
       end
 
-      def draft_check_save
+      def draft_check_save(owner = nil)
         if self.changed?
           draft_res = {}
           no_draft_res = {}
           self.class.column_names.each do |name|
             if self.send("#{name}_changed?")
-              if self.class::Need_draft_attributes.include? name.to_sym
+              if self.need_verified_fields.include? name.to_sym
                 draft_res[name] = self.send(name)
               else
                 no_draft_res[name] = self.send(name)
@@ -38,17 +38,41 @@ module ActsAsDraftable
 
           self.reload
           self.update(no_draft_res) unless no_draft_res.blank?
-          self.drafts.create(content: draft_res, active: 1) unless draft_res.blank?
+
+          unless draft_res.blank?
+            self.check_draft(draft_res, owner)
+          end
         end
       end
 
-      def draft_all_save
+      def draft_all_save(owner = nil)
         if self.changed?
           res = {}
           self.class.column_names.each do |name|
             res[name] = self.send(name) if self.send("#{name}_changed?")
           end
-          self.drafts.create(content: res, active: 1) unless res.blank?
+
+          unless res.blank?
+            self.check_draft(res, owner)
+          end
+        end
+      end
+
+      def check_draft(draft_res, owner = nil)
+        if self.last_draft.is_waitting_verified?
+          return
+        elsif self.last_draft.is_editting?
+          self.last_draft.update(content: draft_res, active: 1, verified: -1, ownerable: owner)
+        else
+          self.drafts.create(content: draft_res, active: 1, verified: -1, ownerable: owner)
+        end
+      end
+
+      def ask_for_verified
+        if self.last_draft.is_editting?
+          self.last_draft.update(verified: 0)
+        else
+          return false
         end
       end
 
@@ -56,17 +80,20 @@ module ActsAsDraftable
         self.drafts.order(created_at: :desc).first
       end
 
-      def last_active_draft
-        draft = self.drafts.order(created_at: :desc).first
-        draft.active? ? draft : nil unless draft.blank?
+      def lastest_unverified_draft
+        self.drafts.verified_false.first
       end
 
-      def last_active_draft_to_online(verfied_mome, operator = nil)
-        last_active_draft.to_online(verfied_mome, operator) unless last_active_draft.blank?
+      def lastest_wait_verified_draft
+        self.drafts.wait_verified.first
       end
 
-      def last_active_draft_to_offline(verfied_mome, operator = nil)
-        last_active_draft.to_offline(verfied_mome, operator) unless last_active_draft.blank?
+      def verified_draft_to_true(verfied_mome, operator = nil)
+        last_draft.to_online(verfied_mome, operator) if last_draft and last_draft.is_waitting_verified?
+      end
+
+      def verified_draft_to_false(verfied_mome, operator = nil)
+        last_draft.to_offline(verfied_mome, operator) if last_draft and last_draft.is_waitting_verified?
       end
 
       def with_draft
@@ -74,10 +101,6 @@ module ActsAsDraftable
           self.assign_attributes(self.last_draft.content_as_json)
         end
         self
-      end
-
-      def is_need_verified
-        last_active_draft.blank? ? 0 : 1
       end
 
     end
