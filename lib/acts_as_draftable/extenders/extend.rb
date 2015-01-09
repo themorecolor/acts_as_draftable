@@ -11,15 +11,9 @@ module ActsAsDraftable
       end
 
       module Draftable
-        def acts_as_draftable(*args)
+        def acts_as_draftable
           require 'acts_as_draftable/draftable'
           include ActsAsDraftable::Draftable
-
-          class_eval do
-            class_attribute :need_verified_fields
-            self.need_verified_fields = args
-          end
-
         end
       end
 
