@@ -59,12 +59,16 @@ module ActsAsDraftable
       end
 
       def check_draft(draft_res, owner = nil)
-        if self.last_draft.is_waitting_verified?
-          return
-        elsif self.last_draft.is_editting?
-          self.last_draft.update(content: draft_res, active: 1, verified: -1, ownerable: owner)
-        else
+        if self.last_draft.blank?
           self.drafts.create(content: draft_res, active: 1, verified: -1, ownerable: owner)
+        else
+          if self.last_draft.is_waitting_verified?
+            return
+          elsif self.last_draft.is_editting?
+            self.last_draft.update(content: draft_res, active: 1, verified: -1, ownerable: owner)
+          else
+            self.drafts.create(content: draft_res, active: 1, verified: -1, ownerable: owner)
+          end
         end
       end
 
@@ -89,11 +93,11 @@ module ActsAsDraftable
       end
 
       def verified_draft_to_true(verfied_mome, operator = nil)
-        last_draft.to_online(verfied_mome, operator) if last_draft and last_draft.is_waitting_verified?
+        last_draft.to_online(verfied_mome, operator) if last_draft.present? and last_draft.is_waitting_verified?
       end
 
       def verified_draft_to_false(verfied_mome, operator = nil)
-        last_draft.to_offline(verfied_mome, operator) if last_draft and last_draft.is_waitting_verified?
+        last_draft.to_offline(verfied_mome, operator) if last_draft.present? and last_draft.is_waitting_verified?
       end
 
       def with_draft
