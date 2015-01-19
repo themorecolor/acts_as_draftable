@@ -107,6 +107,14 @@ module ActsAsDraftable
         self
       end
 
+      def draft_logs(limit = nil)
+        if limit.blank?
+          drafts.order(created_at: :desc).limit(30)
+        else
+          drafts.order(created_at: :desc).limit(limit)
+        end
+      end
+
     end
 
     module ClassMethods
