@@ -1,5 +1,5 @@
 module ActsAsDraftable
-  class Draft < ::ActiveRecord::Base
+  class Draft < BackofficeBase
 
     serialize :content
 
@@ -36,7 +36,7 @@ module ActsAsDraftable
       if operator.blank?
         self.update(verified: 1, verfied_mome: verfied_mome)
       else
-        self.update(verified: 1, operater_id: operator.try(:id), verified_mome: verfied_mome)
+        self.update(verified: 1, operater_id: operator.try(:id), verified_memo: verfied_mome)
       end
       self.draftable.update(verified: 1)
     end
@@ -45,7 +45,7 @@ module ActsAsDraftable
       if operator.blank?
         self.update(verified: -2, verfied_mome: verfied_mome)
       else
-        self.update(verified: -2, operater_id: operator.try(:id), verified_mome: verfied_mome)
+        self.update(verified: -2, operater_id: operator.try(:id), verified_memo: verfied_mome)
       end
       self.draftable.update(verified: -2)
     end
