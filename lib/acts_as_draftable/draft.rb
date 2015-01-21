@@ -1,5 +1,12 @@
 module ActsAsDraftable
-  class Draft < ::BackofficeBase
+  class Draft < ::ActiveRecord::Base
+
+    self.abstract_class = true
+    establish_connection :backoffice
+
+    def self.table_name_prefix
+      self.connection.current_database + '.'
+    end
 
     serialize :content
 
