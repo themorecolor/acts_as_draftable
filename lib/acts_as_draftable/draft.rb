@@ -34,7 +34,7 @@ module ActsAsDraftable
     def to_online(verfied_mome, operator)
       self.draftable.update!(self.content_as_json)
       if operator.blank?
-        self.update(verified: 1)
+        self.update(verified: 1, verfied_mome: verfied_mome)
       else
         self.update(verified: 1, operator_id: operator.try(:id), verified_mome: verfied_mome)
       end
@@ -43,7 +43,7 @@ module ActsAsDraftable
 
     def to_offline(verfied_mome, operator)
       if operator.blank?
-        self.update(verified: -2)
+        self.update(verified: -2, verfied_mome: verfied_mome)
       else
         self.update(verified: -2, operator_id: operator.try(:id), verified_mome: verfied_mome)
       end
