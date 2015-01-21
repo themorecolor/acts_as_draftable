@@ -1,5 +1,5 @@
 module ActsAsDraftable
-  class Draft < BackofficeBase
+  class Draft < ::BackofficeBase
 
     serialize :content
 
