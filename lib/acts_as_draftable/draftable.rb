@@ -6,7 +6,7 @@ module ActsAsDraftable
 
     included do
 
-      has_many :drafts, class_name: "ActsAsDraftable::Draft", as: :draftable
+      has_many :drafts, as: :draftable
 
       def draft_update(params, owner = nil)
         self.assign_attributes(params)

@@ -6,7 +6,7 @@ module ActsAsDraftable
     extend ActiveSupport::Concern
 
     included do
-      has_many :drafts, class_name: "ActsAsDraftable::Draft", as: :ownerable
+      has_many :drafts, as: :ownerable
     end
 
 
