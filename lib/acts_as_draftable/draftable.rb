@@ -73,6 +73,11 @@ module ActsAsDraftable
       end
 
       def ask_for_verified
+        if self.last_draft.blank?
+          self.update(verified: 0)
+          return
+        end
+
         if self.last_draft.is_editting?
           self.last_draft.update(verified: 0)
           self.update(verified: 0)
