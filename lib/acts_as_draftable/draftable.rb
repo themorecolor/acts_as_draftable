@@ -107,9 +107,11 @@ module ActsAsDraftable
       end
 
       def with_draft
+
         if self.last_draft.present? and [0, -1, -2].include? self.last_draft.verified
           self.assign_attributes(self.last_draft.content_as_json)
         end
+        
         self
       end
 
