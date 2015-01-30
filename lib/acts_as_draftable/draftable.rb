@@ -78,12 +78,18 @@ module ActsAsDraftable
           return
         end
 
-        if self.last_draft.is_editting?
+        # if self.last_draft.is_editting?
+        #   self.last_draft.update(verified: 0)
+        #   self.update(verified: 0)
+        # else
+        #   return false
+        # end
+
+        unless [1, 0].include? self.last_draft.verified
           self.last_draft.update(verified: 0)
           self.update(verified: 0)
-        else
-          return false
         end
+
       end
 
       def last_draft
@@ -111,7 +117,7 @@ module ActsAsDraftable
         if self.last_draft.present? and [0, -1, -2].include? self.last_draft.verified
           self.assign_attributes(self.last_draft.content_as_json)
         end
-        
+
         self
       end
 
