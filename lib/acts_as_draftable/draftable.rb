@@ -15,11 +15,14 @@ module ActsAsDraftable
           raise self.errors.full_messages.join(", ")
         end
 
-        unless self.need_verified_fields.blank?
-          draft_check_save(owner)
-        else
-          draft_all_save(owner)
+        ActiveRecord::Base.transaction do
+          unless self.need_verified_fields.blank?
+            draft_check_save(owner)
+          else
+            draft_all_save(owner)
+          end
         end
+
       end
 
       def draft_check_save(owner = nil)
@@ -73,6 +76,7 @@ module ActsAsDraftable
       end
 
       def ask_for_verified
+
         if self.last_draft.blank?
           self.update(verified: 0)
           return
@@ -85,9 +89,11 @@ module ActsAsDraftable
         #   return false
         # end
 
-        unless [1, 0].include? self.last_draft.verified
-          self.last_draft.update(verified: 0)
-          self.update(verified: 0)
+        ActiveRecord::Base.transaction do
+          unless [1, 0].include? self.last_draft.verified
+            self.last_draft.update(verified: 0)
+            self.update(verified: 0)
+          end
         end
 
       end
@@ -105,11 +111,15 @@ module ActsAsDraftable
       end
 
       def verified_draft_to_true(verfied_mome, operator = nil)
-        last_draft.to_online(verfied_mome, operator) if last_draft.present? and last_draft.is_waitting_verified?
+        ActiveRecord::Base.transaction do
+          last_draft.to_online(verfied_mome, operator) if last_draft.present? and last_draft.is_waitting_verified?
+        end
       end
 
       def verified_draft_to_false(verfied_mome, operator = nil)
-        last_draft.to_offline(verfied_mome, operator) if last_draft.present? and last_draft.is_waitting_verified?
+        ActiveRecord::Base.transaction do
+          last_draft.to_offline(verfied_mome, operator) if last_draft.present? and last_draft.is_waitting_verified?
+        end
       end
 
       def with_draft
