@@ -66,7 +66,7 @@ module ActsAsDraftable
           self.drafts.create(content: draft_res, active: 1, verified: -1, ownerable: owner)
         else
           if self.last_draft.is_waitting_verified?
-            return
+            raise "编辑中不能修改。。。"
           elsif self.last_draft.is_editting?
             self.last_draft.update(content: draft_res, active: 1, verified: -1, ownerable: owner)
           else
