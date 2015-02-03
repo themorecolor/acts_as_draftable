@@ -14,6 +14,8 @@ module ActsAsDraftable
     scope :wait_verified, ->{where(verified: 0)}
     scope :verified_true, ->{where(verified: 1)}
 
+    after_create :set_verified
+
 
     def unactive
       update(active: 0)
@@ -56,6 +58,12 @@ module ActsAsDraftable
 
     def operator_name
       Operator.find(operator_id).try(:name) unless operator_id.blank?
+    end
+
+
+    private
+    def set_verified
+      self.draftable.update(verified: -1) if self.draftable.respond_to?("verified=")
     end
 
   end
