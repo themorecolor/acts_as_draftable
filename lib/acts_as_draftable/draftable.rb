@@ -62,11 +62,23 @@ module ActsAsDraftable
       end
 
       def check_draft(draft_res, owner = nil)
+
+        if draft_res.blank?
+          unless self.last_draft.blank?
+            if self.last_draft.is_editting?
+              self.last_draft.update(content: draft_res, ownerable: owner)
+            end
+          end
+
+          return
+        end
+
+
         if self.last_draft.blank?
           self.drafts.create(content: draft_res, active: 1, verified: -1, ownerable: owner)
         else
           if self.last_draft.is_waitting_verified?
-            raise "编辑中不能修改。。。"
+            raise "审核中不能修改。。。"
           elsif self.last_draft.is_editting?
             self.last_draft.update(content: draft_res, active: 1, verified: -1, ownerable: owner)
           else
@@ -90,9 +102,11 @@ module ActsAsDraftable
         # end
 
         ActiveRecord::Base.transaction do
-          unless [1, 0].include? self.last_draft.verified
-            self.last_draft.update(verified: 0)
-            self.update(verified: 0)
+          unless [1, -2].include? self.last_draft.verified
+            if self.last_draft.content.present?
+              self.last_draft.update(verified: 0)
+              self.update(verified: 0)
+            end
           end
         end
 
