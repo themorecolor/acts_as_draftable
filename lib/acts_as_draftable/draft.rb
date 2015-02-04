@@ -53,7 +53,7 @@ module ActsAsDraftable
     end
 
     def content_as_json
-      self.content
+      self.content.to_h
     end
 
     def operator_name
