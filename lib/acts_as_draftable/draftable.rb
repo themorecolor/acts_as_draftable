@@ -17,24 +17,24 @@ module ActsAsDraftable
 
         ActiveRecord::Base.transaction do
           unless self.need_verified_fields.blank?
-            draft_check_save(owner, params)
+            draft_check_save(owner)
           else
-            draft_all_save(owner, params)
+            draft_all_save(owner)
           end
         end
 
       end
 
-      def draft_check_save(owner = nil, p = {})
+      def draft_check_save(owner = nil)
         if self.changed?
           draft_res = {}
           no_draft_res = {}
           self.class.column_names.each do |name|
             if self.send("#{name}_changed?")
               if self.need_verified_fields.include? name.to_sym
-                draft_res[name] = p[name.to_sym]
+                draft_res[name] = self.send(name)
               else
-                no_draft_res[name] = p[name.to_sym]
+                no_draft_res[name] = self.send(name)
               end
             end
           end
@@ -48,11 +48,11 @@ module ActsAsDraftable
         end
       end
 
-      def draft_all_save(owner = nil, p = {})
+      def draft_all_save(owner = nil)
         if self.changed?
           res = {}
           self.class.column_names.each do |name|
-            res[name] = p[name.to_sym] if self.send("#{name}_changed?")
+            res[name] = self.send(name) if self.send("#{name}_changed?")
           end
 
           unless res.blank?
