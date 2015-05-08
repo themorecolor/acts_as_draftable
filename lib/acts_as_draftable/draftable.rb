@@ -105,7 +105,7 @@ module ActsAsDraftable
           unless [1, -2].include? self.last_draft.verified
             if self.last_draft.content.present?
               self.last_draft.update(verified: 0)
-              self.update(verified: 0)
+              self.update_columns(verified: 0)
             end
           end
         end
